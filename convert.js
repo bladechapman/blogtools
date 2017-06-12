@@ -12,7 +12,8 @@ marked.setOptions({
 });
 
 module.exports = {
-  parseInput: (input, splitStr=/\n+&&&\n+/) => {
+  parseInput: (input, splitStr) => {
+    splitStr = (splitStr === undefined) ? /\n+&&&\n+/ : splitStr
     let dataToSplit = input.split(splitStr);
     let yamlToParse = dataToSplit[0]
     let mdToParse = dataToSplit.slice(1).join('');

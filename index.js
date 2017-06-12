@@ -27,58 +27,67 @@ argParser.addArgument(
 );
 let args = argParser.parseArgs();
 
-if (fs.lstatSync(args.path).isDirectory() === true) {
-  if (args.r === false) {
-    console.log(args.path + " is a directory (not parsed)");
-    process.exit(0);
-  }
-  else {
-    fs.readdirSync(args.path).filter((filename))
-  }
-} else {
-  processFile(args.path);
-}
-
-
 
 function processDirectory(currentPath) {
   return fs.readdir(currentPath)
-    .then((err, files) => {
-      let fullPaths = files.map((fileName) => return path.join(currentPath, filename));
-      return fullPaths.map((path) => return fs.lstat(path).then((inode) => return {
-        path: path,
-        isDirectory: inode.isDirectory()
-      }));
+    .then((files, err) => {
+      let fullPaths = files.map((fileName) => { return path.join(currentPath, fileName) });
+      let promises = fullPaths.map((path) => {
+        return fs.lstat(path).then((inode) => {
+          return {
+            path: path,
+            isDirectory: inode.isDirectory()
+          };
+        });
+      });
+      return Promise.all(promises);
     })
     .then((directoryInfo) => {
-      // use map
-
-
-      // directoryInfo.forEach((item) => {
-      //   if (item.isDirectory === false &&
-      //     item.path.match(/.*\.blog$/) !== null) {
-      //
-      //   }
-      // });
+      let promises = directoryInfo.map((infoItem) => {
+        if (infoItem.isDirectory === true) {
+          return processDirectory(infoItem.path);
+        }
+        else if (infoItem.path.match(/.*\.blog$/) !== null) {
+          return processFile(infoItem.path);
+        } else {
+          return null;
+        }
+      }).filter((item) => { return item !== null; })
+      return Promise.all(promises);
+    })
+    .catch((err) => {
+      return err;
     });
-  });
-
-
-  // fs.readdirSync(currentPath).forEach((name) => {
-  //   let candidatePath = path.join(currentPath, name);
-  //   if (candidatePath)
-  // });
 }
 
 function processFile(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(args.path, 'utf8', (err, data) => {
-      if (err !== null) { reject(err); }
-      else { resolve(parseInput(data)) };
+  return fs.readFile(path, 'utf8')
+    .then((data, err) => {
+      let parsed = parseInput(data);
+      parsed["path"] = path;
+      return parsed;
     });
-  });
 }
 
-// processFile(args.path)
-//   .then((data) => { console.log(data); })
-//   .catch((err) => { console.log(err); })
+function interpretArguments(args) {
+  if (fs.lstatSync(args.path).isDirectory() === true) {
+    if (args.r === false) {
+      console.log(args.path + " is a directory (not parsed)");
+      process.exit(0);
+    }
+    else {
+      return processDirectory(args.path);
+    }
+  } else {
+    return processFile(args.path);
+  }
+}
+
+
+interpretArguments(args)
+  .then((parsed) => {
+    console.log(parsed);
+  })
+  .catch((err) => {
+    console.log(err);
+  })
