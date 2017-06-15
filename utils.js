@@ -5,7 +5,7 @@ const path = require('path');
 
 function flatten(input) {
   let ret = [];
-  for (item of input) {
+  for (let item of input) {
     if (Array.isArray(item)) {
       ret = [...ret, ...flatten(item)];
     } else {

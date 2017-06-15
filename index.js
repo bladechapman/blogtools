@@ -87,9 +87,14 @@ function interpretArguments(args) {
 
 interpretArguments(args)
   .then(utils.flatten)
-  .then((parsed) => {
-    console.log(parsed);
+  .then((items) => {
+    items.forEach((item) => {
+      item.path += ".html";
+    });
+    return items;
   })
-  .catch((err) => {
-    console.log(err);
-  })
+  .then((items) => items.forEach((item) => {
+    let content = item.html;
+    let path = item.path;
+    utils.write(path, content);
+  }));

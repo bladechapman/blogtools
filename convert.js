@@ -1,7 +1,7 @@
 'use strict';
 
-let marked = require('marked');
-let yaml = require('yaml');
+const marked = require('marked');
+const yaml = require('yaml');
 
 let renderer = new marked.Renderer();
 
@@ -20,7 +20,7 @@ module.exports = {
 
     return {
       yaml: yaml.eval(yamlToParse),
-      md: marked(mdToParse)
+      html: marked(mdToParse)
     };
   }
 };
