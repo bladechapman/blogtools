@@ -5,6 +5,7 @@ const ArgumentParser = require('argparse').ArgumentParser;
 const parseInput = require('./convert').parseInput;
 const fs = require('fs-extra');
 const path = require('path');
+const utils = require("./utils");
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
@@ -65,7 +66,7 @@ function processFile(path) {
     .then((data, err) => {
       let parsed = parseInput(data);
       parsed["path"] = path;
-      return parsed;
+      return [parsed];
     });
 }
 
@@ -85,6 +86,7 @@ function interpretArguments(args) {
 
 
 interpretArguments(args)
+  .then(utils.flatten)
   .then((parsed) => {
     console.log(parsed);
   })
