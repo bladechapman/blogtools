@@ -6,6 +6,7 @@ const parseInput = require('./convert').parseInput;
 const fs = require('fs-extra');
 const path = require('path');
 const utils = require("./utils");
+const config = require("./config");
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
@@ -66,6 +67,10 @@ function processFile(path) {
     .then((data, err) => {
       let parsed = parseInput(data);
       parsed["path"] = path;
+      let rules = config.activeRules;
+      rules.forEach((rule) => {
+        parsed = rule(parsed);
+      });
       return [parsed];
     });
 }
@@ -97,4 +102,5 @@ interpretArguments(args)
     let content = item.html;
     let path = item.path;
     utils.write(path, content);
-  }));
+  }))
+  .catch((err) => { console.log(err); })

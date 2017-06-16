@@ -1,7 +1,7 @@
 'use strict';
 
 const marked = require('marked');
-const yaml = require('yaml');
+const yaml = require('js-yaml');
 
 let renderer = new marked.Renderer();
 
@@ -19,7 +19,7 @@ module.exports = {
     let mdToParse = dataToSplit.slice(1).join('');
 
     return {
-      yaml: yaml.eval(yamlToParse),
+      yaml: yaml.safeLoad(yamlToParse),
       html: marked(mdToParse)
     };
   }
