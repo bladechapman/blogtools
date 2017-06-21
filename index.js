@@ -72,7 +72,8 @@ function processFile(path) {
         parsed = rule(parsed);
       });
       return [parsed];
-    });
+    })
+    .catch((err) => {console.log(err)})
 }
 
 function interpretArguments(args) {

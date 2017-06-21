@@ -8,8 +8,17 @@ let renderer = new marked.Renderer();
 marked.setOptions({
   renderer: renderer,
   gfm: true,
-  sanitize: true
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  highlight: function (code) {
+    return require('highlight.js').highlightAuto(code).value;
+  }
 });
+
 
 module.exports = {
   parseInput: (input, splitStr) => {
