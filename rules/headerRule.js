@@ -21,12 +21,11 @@ function subtitleRule(item) {
 }
 
 function dateRule(item) {
-  if (!("date" in item.yaml)) {
-    d = new Date();
-    item.html = `<p id="date">${d.getMonth()}/${d.getDate()}/${d.getFullYear()} - <a href="http://bladeismyna.me" style="color:inherit;>Blade Chapman</a></p>\n` + item.html;
-    return item;
+  let d = new Date();
+  let date = `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
+  if ("date" in item.yaml) {
+    date = item.yaml["date"];
   }
-  let date = item.yaml["date"];
   return {
     yaml: item.yaml,
     path: item.path,
