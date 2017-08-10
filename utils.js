@@ -17,6 +17,7 @@ function flatten(input) {
 
 function smartWrite(pathToWrite, content, pathTraversed="") {
   let pathComponents = pathToWrite.split('/');
+  if (pathComponents[0] === ".") { pathComponents.splice(0, 1); }
   if (pathComponents.length === 1) {
     return fs.open(path.join(pathTraversed, pathComponents[0]), 'w')
       .then((fd, err) => {

@@ -85,7 +85,8 @@ function interpretArguments(args) {
     else {
       return processDirectory(args.path);
     }
-  } else {
+  }
+  else {
     return processFile(args.path);
   }
 }
