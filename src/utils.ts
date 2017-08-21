@@ -1,10 +1,15 @@
 'use strict'
 
-const fs = require('fs-extra');
-const path = require('path');
+import fs = require('fs-extra');
+import path = require('path');
 
-function flatten(input) {
-  let ret = [];
+/**
+ * [function description]
+ * @param  {any[]} input [description]
+ * @return {any[]}       [description]
+ */
+export const flatten = function(input: any[]): any[] {
+  let ret: any[] = [];
   for (let item of input) {
     if (Array.isArray(item)) {
       ret = [...ret, ...flatten(item)];
@@ -15,23 +20,33 @@ function flatten(input) {
   return ret;
 }
 
-function smartWrite(pathToWrite, content, pathTraversed="") {
+/**
+ * [function description]
+ * @param  {[type]} pathToWrite      [description]
+ * @param  {[type]} content          [description]
+ * @param  {[type]} pathTraversed="" [description]
+ * @return {[type]}                  [description]
+ */
+export const write = function(pathToWrite, content, pathTraversed="") {
   let pathComponents = pathToWrite.split('/');
   if (pathComponents[0] === ".") { pathComponents.splice(0, 1); }
+
   if (pathComponents.length === 1) {
     return fs.open(path.join(pathTraversed, pathComponents[0]), 'w')
       .then((fd, err) => {
         return fs.write(fd, content).then(() => console.log(path.join(pathTraversed, pathToWrite) + " written"));
       });
-  } else {
+  }
+  else {
     fs.lstat(path.join(pathTraversed, pathComponents[0]))
       .then((inode) => {
         if (inode.isDirectory() === true) {
           // proceed normally if directory already exists
           pathTraversed = path.join(pathTraversed, pathComponents[0]);
-          pathToWrite = pathComponents.slice(1)[0] || '';
-          return smartWrite(pathToWrite, content, pathTraversed);
-        } else {
+          pathToWrite = pathComponents.slice(1).join('/') || '';
+          return write(pathToWrite, content, pathTraversed);
+        }
+        else {
           // error out otherwise
           console.log("It looks like a non-directory is blocking the creation of " + path.join(pathTraversed, pathToWrite));
           return;
@@ -43,14 +58,9 @@ function smartWrite(pathToWrite, content, pathTraversed="") {
         return fs.mkdir(path.join(pathTraversed, pathComponents[0]))
           .then(() => {
             pathTraversed = path.join(pathTraversed, pathComponents[0]);
-            pathToWrite = pathComponents.slice(1)[0] || '';
-            return smartWrite(pathToWrite, content, pathTraversed);
+            pathToWrite = pathComponents.slice(1).join('/') || '';
+            return write(pathToWrite, content, pathTraversed);
           });
       })
   }
-}
-
-module.exports = {
-  flatten: flatten,
-  write: smartWrite
 }

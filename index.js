@@ -2,11 +2,11 @@
 'use strict'
 
 const ArgumentParser = require('argparse').ArgumentParser;
-const parseInput = require('./convert').parseInput;
+const parseInput = require('./src/convert').parseInput;
 const fs = require('fs-extra');
 const path = require('path');
-const utils = require("./utils");
-const config = require("./config");
+const utils = require("./src/utils");
+const config = require("./src/config");
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
@@ -98,6 +98,7 @@ interpretArguments(args)
     items.forEach((item) => {
       item.path += ".html";
     });
+
     return items;
   })
   .then((items) => items.forEach((item) => {
