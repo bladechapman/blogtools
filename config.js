@@ -1,9 +1,9 @@
-const headerRule = require('./rules/headerRule');
-const cssRule = require('./rules/cssRule');
-const imageResizeRule = require('./rules/imageResizeRule');
-const captionRule = require('./rules/captionRule');
-const spacerRule = require('./rules/spacerRule');
-const tldrRule = require('./rules/tldrRule');
+const headerRule = require('./src/rules/headerRule');
+const cssRule = require('./src/rules/cssRule');
+const imageResizeRule = require('./src/rules/imageResizeRule');
+const captionRule = require('./src/rules/captionRule');
+const spacerRule = require('./src/rules/spacerRule');
+const tldrRule = require('./src/rules/tldrRule');
 
 module.exports = {
   activeRules: [
