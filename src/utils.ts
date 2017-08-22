@@ -48,6 +48,7 @@ export const write = function(pathToWrite: string, content: string, pathTraverse
       });
   }
 
+
   // Recursive case, follow the path, creating a directory if necessary
 
   // handle the case where we're starting from root (which is represented)
