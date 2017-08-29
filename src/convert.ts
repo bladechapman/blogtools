@@ -1,7 +1,8 @@
 'use strict';
 
-const marked = require('marked');
-const yaml = require('js-yaml');
+import marked = require('marked');
+import yaml = require('js-yaml');
+import highlight = require('highlight.js');
 
 let renderer = new marked.Renderer();
 
@@ -14,15 +15,15 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  highlight: function (code) {
-    return require('highlight.js').highlightAuto(code).value;
+  highlight: (code) => {
+    return highlight.highlightAuto(code).value;
   }
 });
 
 
-module.exports = {
-  parseInput: (input, splitStr) => {
-    splitStr = (splitStr === undefined) ? /\n+&&&\n+/ : splitStr
+exports = {
+  parseInput: (input: string, splitStr: RegExp | string | null) => {
+    splitStr = (splitStr === null) ? /\n+&&&\n+/ : splitStr
     let dataToSplit = input.split(splitStr);
     let yamlToParse = dataToSplit[0];
     let mdToParse = dataToSplit.slice(1).join('');
