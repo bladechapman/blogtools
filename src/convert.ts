@@ -21,16 +21,15 @@ marked.setOptions({
 });
 
 
-exports = {
-  parseInput: (input: string, splitStr: RegExp | string | null) => {
-    splitStr = (splitStr === null) ? /\n+&&&\n+/ : splitStr
-    let dataToSplit = input.split(splitStr);
-    let yamlToParse = dataToSplit[0];
-    let mdToParse = dataToSplit.slice(1).join('');
 
-    return {
-      yaml: yaml.safeLoad(yamlToParse),
-      html: marked(mdToParse)
-    };
-  }
-};
+export const parseInput = (input: string, splitStr: RegExp | string | undefined) => {
+  splitStr = (splitStr === undefined) ? /\n+&&&\n+/ : splitStr
+  let dataToSplit = input.split(splitStr);
+  let yamlToParse = dataToSplit[0];
+  let mdToParse = dataToSplit.slice(1).join('');
+
+  return {
+    yaml: yaml.safeLoad(yamlToParse),
+    html: marked(mdToParse)
+  };
+}

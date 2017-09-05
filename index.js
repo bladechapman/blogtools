@@ -6,7 +6,7 @@ const parseInput = require('./built/convert').parseInput;
 const fs = require('fs-extra');
 const path = require('path');
 const utils = require("./built/utils");
-const config = require("./config");
+const config = require("./built/config");
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
