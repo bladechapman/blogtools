@@ -7,6 +7,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const utils = require("./built/utils");
 const config = require("./built/config");
+const genIndex = require('./built/genIndex').default;
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
@@ -22,7 +23,15 @@ argParser.addArgument(
   }
 );
 argParser.addArgument(
-  ['path'],
+    ['-i', '--index'],
+    {
+      action: 'storeTrue',
+      defualtValue: false,
+      help: 'Use this flag to generate an index.html'
+    }
+);
+argParser.addArgument(
+  ['-p', '--path'],
   {
     help: 'Path to the target to be parsed from markdown to html.'
   }
@@ -76,6 +85,18 @@ function processFile(path) {
     .catch((err) => {console.log(err)})
 }
 
+function processIndex(fpath) {
+  return processDirectory(fpath).then((items) => {
+    let flattened = utils.flatten(items);
+    let indexHtml = genIndex(flattened);
+    let indexPath = path.join(path.resolve(fpath), "index");
+    return [{
+      path: indexPath,
+      html: indexHtml
+    }];
+  });
+}
+
 function interpretArguments(args) {
   if (fs.lstatSync(args.path).isDirectory() === true) {
     if (args.r === false) {
@@ -83,11 +104,23 @@ function interpretArguments(args) {
       process.exit(0);
     }
     else {
-      return processDirectory(args.path);
+      if (args.index === true) {
+        // generate index
+        return processIndex(args.path);
+      }
+      else {
+        return processDirectory(args.path);
+      }
     }
   }
   else {
-    return processFile(args.path);
+    if (args.index === true) {
+      console.log("An index can only be generated from a directory");
+      process.exit(0)
+    }
+    else {
+      return processFile(args.path);
+    }
   }
 }
 
