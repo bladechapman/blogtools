@@ -2,6 +2,7 @@
 interface BlogItem {
   yaml: any;
   html: string;
+  path: string;
 }
 
 function generateHtml(listItemHtml: string[]): string {
@@ -23,7 +24,7 @@ function genIndex(items: BlogItem[]): string {
     let date = item.yaml.date;
     let title = item.yaml.title;
     let subtitle = item.yaml.subtitle;
-    let link = "http://bladeismyna.me"
+    let link = item.path + ".html";
 
     return `<li><a href="${link}"><div class="item-title">${title}</div></a><div class="item-subtitle">${subtitle}</div><div class="item-date">${date}</div></li>`;
   });
