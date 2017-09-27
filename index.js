@@ -7,7 +7,6 @@ const fs = require('fs-extra');
 const path = require('path');
 const utils = require("./built/utils");
 const config = require("./built/config");
-const genIndex = require('./built/genIndex').default;
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
@@ -38,67 +37,6 @@ argParser.addArgument(
 );
 let args = argParser.parseArgs();
 
-
-function processDirectory(currentPath) {
-  return fs.readdir(currentPath)
-    .then((files, err) => {
-      let fullPaths = files.map((fileName) => { return path.join(currentPath, fileName) });
-      let promises = fullPaths.map((path) => {
-        return fs.lstat(path).then((inode) => {
-          return {
-            path: path,
-            isDirectory: inode.isDirectory()
-          };
-        });
-      });
-      return Promise.all(promises);
-    })
-    .then((directoryInfo) => {
-      let promises = directoryInfo.map((infoItem) => {
-        if (infoItem.isDirectory === true) {
-          return processDirectory(infoItem.path);
-        }
-        else if (infoItem.path.match(/.*\.blog$/) !== null) {
-          return processFile(infoItem.path);
-        } else {
-          return null;
-        }
-      }).filter((item) => { return item !== null; })
-      return Promise.all(promises);
-    })
-    .catch((err) => {
-      return err;
-    });
-}
-
-function processFile(path) {
-  return fs.readFile(path, 'utf8')
-    .then((data, err) => {
-      let parsed = parseInput(data);
-      parsed["path"] = path;
-      let rules = config.activeRules;
-      rules.forEach((rule) => {
-        parsed = rule(parsed);
-      });
-      return [parsed];
-    })
-    .catch((err) => {console.log(err)})
-}
-
-function processIndex(fpath) {
-  return processDirectory(fpath).then((items) => {
-    let flattened = utils.flatten(items);
-      let indexHtml = genIndex(flattened, [
-        /^_tests.*/
-      ]);
-    let indexPath = path.join(path.resolve(fpath), "index");
-    return [{
-      path: indexPath,
-      html: indexHtml
-    }];
-  });
-}
-
 function interpretArguments(args) {
   if (fs.lstatSync(args.path).isDirectory() === true) {
     if (args.r === false) {
@@ -107,10 +45,10 @@ function interpretArguments(args) {
     }
     else {
       if (args.index === true) {
-        return processIndex(args.path);
+        return utils.processIndex(args.path);
       }
       else {
-        return processDirectory(args.path);
+        return utils.processDirectory(args.path);
       }
     }
   }
@@ -125,14 +63,11 @@ function interpretArguments(args) {
   }
 }
 
-
 interpretArguments(args)
-  .then(utils.flatten)
   .then((items) => {
     items.forEach((item) => {
       item.path += ".html";
     });
-
     return items;
   })
   .then((items) => {
