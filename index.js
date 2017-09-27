@@ -88,7 +88,9 @@ function processFile(path) {
 function processIndex(fpath) {
   return processDirectory(fpath).then((items) => {
     let flattened = utils.flatten(items);
-    let indexHtml = genIndex(flattened);
+      let indexHtml = genIndex(flattened, [
+        /^_tests.*/
+      ]);
     let indexPath = path.join(path.resolve(fpath), "index");
     return [{
       path: indexPath,

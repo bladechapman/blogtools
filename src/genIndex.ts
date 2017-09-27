@@ -13,7 +13,7 @@ function generateHtml(listItemHtml: string[]): string {
   return indexTemplate;
 }
 
-function genIndex(items: BlogItem[]): string {
+function genIndex(items: BlogItem[], ignorePatterns: string[]): string {
   let sorted = items.concat().sort((a: BlogItem, b: BlogItem): number => {
     if (new Date(a) < new Date(b)) return -1;
     else if (new Date(a) > new Date(b)) return 1;
@@ -26,7 +26,13 @@ function genIndex(items: BlogItem[]): string {
     let subtitle = item.yaml.subtitle;
     let link = item.path + ".html";
 
-    return `<li><a href="${link}"><div class="item-title">${title}</div></a><div class="item-subtitle">${subtitle}</div><div class="item-date">${date}</div></li>`;
+    let shouldIgnore = ignorePatterns.map((pattern) => link.match(pattern) !== null).reduce((a, b) => a || b, false);
+    if (shouldIgnore === true) {
+      return '';
+    }
+    else {
+      return `<li><a href="${link}"><div class="item-title">${title}</div></a><div class="item-subtitle">${subtitle}</div><div class="item-date">${date}</div></li>`;
+    }
   });
 
   return generateHtml(listItems);
