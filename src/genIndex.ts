@@ -6,8 +6,8 @@ interface BlogItem {
 
 function generateHtml(listItemHtml: string[]): string {
   const listHtml = listItemHtml.join('');
-  const stylesheetLocation = `./global/style/index.css`;
-  const indexTemplate = `<title>Writing</title><link rel="stylesheet" type="text/css" href="${stylesheetLocation}"><body><div id="title">Writing</div><ul style="list-style-type:none"><div class="divider"></div><div id="links"><a href="http://bladeismyna.me">Blade Chapman</a></div>${listHtml}</ul></body>`;
+  const stylesheetLocation = `./index.css`;
+  const indexTemplate = `<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"><meta name="apple-mobile-web-app-capable" content="yes" /><title>Writing</title><link rel="stylesheet" type="text/css" href="${stylesheetLocation}"><body><div id="title">Writing</div><ul style="list-style-type:none"><div class="divider"></div><div id="links"><a href="http://bladeismyna.me">Blade Chapman</a></div>${listHtml}</ul></body>`;
 
   return indexTemplate;
 }
@@ -25,7 +25,7 @@ function genIndex(items: BlogItem[]): string {
     let subtitle = item.yaml.subtitle;
     let link = "http://bladeismyna.me"
 
-    return `<li><div class="item-title"><a href="${link}">${title}</a></div><div class="item-subtitle">${subtitle}</div><div class="item-date">${date}</div></li>`;
+    return `<li><a href="${link}"><div class="item-title">${title}</div></a><div class="item-subtitle">${subtitle}</div><div class="item-date">${date}</div></li>`;
   });
 
   return generateHtml(listItems);

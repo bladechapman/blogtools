@@ -1,7 +1,9 @@
 'use strict'
 
-import fs = require('fs-extra');
-import path = require('path');
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import { parseInput } from './convert';
+// import * as config from './config';
 
 /**
  * Takes any input and returns a flattened version of it.
@@ -88,3 +90,66 @@ const _proceedWithWrite = function(pathTraversed: string, content: string, pathC
   let pathToWrite = pathComponents.slice(1).join('/') || '';
   return write(pathToWrite, content, pathTraversed);
 }
+
+// interface BlogItem {
+//   yaml: any;
+//   html: string;
+// }
+
+// /**
+//  * processFile
+//  *
+//  * @param {string} filePath The path of the file to process
+//  * @returns {BlogItem[]}
+//  */
+// export const processFile = function(filePath: string) {
+//   return fs.readFile(filePath, 'utf8')
+//     .then((data: string) => {
+//       let parsed = parseInput(data);
+//       parsed.path = filePath;
+//       let rules = config.activeRules;
+//       // TODO: explicitly define rule type
+//       rules.forEach((rule: any) => {
+//         parsed = rule(parsed);
+//       });
+//       return [parsed]
+//     })
+//     .catch((err) => { console.log(err); });
+// }
+
+// interface BlogItem {
+//   yaml: any;
+//   html: string;
+//   path: string;
+// }
+
+// export const processDirectory = function(currentPath: string): Promise<BlogItem[]> {
+//   return fs.readdir(currentPath)
+//     .then((files) => {
+//       let fullPaths = files.map((fileName) => { return path.join(currentPath, fileName); });
+//       let promises = fullPaths.map((path) => {
+//         return fs.lstat(path).then((inode) => {
+//           return {
+//             path,
+//             isDirectory: inode.isDirectory()
+//           };
+//         });
+//       });
+//       return Promise.all(promises);
+//     })
+//     .then((directoryInfo) => {
+//       let promises = directoryInfo.map((infoItem) => {
+//         if (infoItem.isDirectory === true) {
+//           return processDirectory(infoItem.path);
+//         }
+//         else if (infoItem.path.match(/.*\.blog$/) !== null) {
+//           return processFile(infoItem.path);
+//         }
+//         else {
+//           return null;
+//         }
+//       }).filter((item) => { return item !== null; });
+
+//       return Promise.all(promises);
+//     });
+// }

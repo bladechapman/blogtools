@@ -105,7 +105,6 @@ function interpretArguments(args) {
     }
     else {
       if (args.index === true) {
-        // generate index
         return processIndex(args.path);
       }
       else {

@@ -20,16 +20,16 @@ marked.setOptions({
   }
 });
 
-
-
-export const parseInput = (input: string, splitStr: RegExp | string | undefined) => {
+export const parseInput = (input: string, splitStr?: RegExp | string | undefined) => {
   splitStr = (splitStr === undefined) ? /\n+&&&\n+/ : splitStr
   let dataToSplit = input.split(splitStr);
   let yamlToParse = dataToSplit[0];
   let mdToParse = dataToSplit.slice(1).join('');
 
+  // TODO explicitly define this type
   return {
     yaml: yaml.safeLoad(yamlToParse),
-    html: marked(mdToParse)
+    html: marked(mdToParse),
+    path: ''
   };
 }
