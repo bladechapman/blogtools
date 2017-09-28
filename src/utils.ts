@@ -30,8 +30,14 @@ export interface BlogItem {
   path: string;
 }
 
+/**
+ * PostParseRule
+ *
+ * @param {BlogItem} item A blog item to parse
+ * @returns {BlogItem} The parsed blog item
+ */
 export type PostParseRule = (item: BlogItem) => BlogItem;
- 
+
 /**
  * Takes any input and returns a flattened version of it.
  *
@@ -185,9 +191,7 @@ export const processDirectory = function(currentPath: string): Promise<BlogItem[
  */
 export const processIndex = function(currentPath: string): Promise<BlogItem[]> {
   return processDirectory(currentPath).then((items) => {
-    let indexHtml = genIndex(items, [
-      /^_tests.*/
-    ]);
+    let indexHtml = genIndex(items, config.indexIgnorePatterns);
     let indexPath = path.join(path.resolve(currentPath), "index");
     return [{
       path: indexPath,

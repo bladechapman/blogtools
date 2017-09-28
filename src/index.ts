@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-'use strict'
 
-const ArgumentParser = require('argparse').ArgumentParser;
-const parseInput = require('./built/convert').parseInput;
-const fs = require('fs-extra');
-const path = require('path');
-const utils = require("./built/utils");
-const config = require("./built/config");
+import { ArgumentParser } from 'argparse';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as utils from './utils';
+import * as config from './config';
 
 let argParser = new ArgumentParser({
   version: '0.0.1',
@@ -22,12 +20,12 @@ argParser.addArgument(
   }
 );
 argParser.addArgument(
-    ['-i', '--index'],
-    {
-      action: 'storeTrue',
-      defualtValue: false,
-      help: 'Use this flag to generate an index.html'
-    }
+  ['-i', '--index'],
+  {
+    action: 'storeTrue',
+    defaultValue: false,
+    help: 'Use this flag to generate an index.html'
+  }
 );
 argParser.addArgument(
   ['-p', '--path'],
@@ -37,11 +35,10 @@ argParser.addArgument(
 );
 let args = argParser.parseArgs();
 
-function interpretArguments(args) {
+function interpretArguments(args: any) {
   if (fs.lstatSync(args.path).isDirectory() === true) {
     if (args.r === false) {
-      console.log(args.path + " is a directory (not parsed)");
-      process.exit(0);
+      throw new Error(args.path + " is a directory (not parsed)");
     }
     else {
       if (args.index === true) {
@@ -54,11 +51,10 @@ function interpretArguments(args) {
   }
   else {
     if (args.index === true) {
-      console.log("An index can only be generated from a directory");
-      process.exit(0)
+      throw new Error("An index can only be generated from a directory");
     }
     else {
-      return processFile(args.path);
+      return utils.processFile(args.path);
     }
   }
 }
@@ -78,4 +74,4 @@ interpretArguments(args)
     });
     return Promise.all(promises);
   })
-  .catch((err) => { console.log(err); })
+  .catch((err) => { console.log(err); });
