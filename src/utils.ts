@@ -5,8 +5,8 @@ import * as path from 'path';
 import * as config from './config';
 import yaml = require('js-yaml');
 import highlight = require('highlight.js');
-const renderer = new marked.Renderer();
 import marked = require('marked');
+const renderer = new marked.Renderer();
 marked.setOptions({
   renderer: renderer,
   gfm: true,
@@ -21,11 +21,16 @@ marked.setOptions({
   }
 });
 
+/**
+ * BlogItem
+ */
 export interface BlogItem {
   yaml: any;
   html: string;
   path: string;
 }
+
+export type PostParseRule = (item: BlogItem) => BlogItem;
  
 /**
  * Takes any input and returns a flattened version of it.
@@ -123,9 +128,8 @@ export const processFile = function(filePath: string): Promise<BlogItem[]> {
     .then((data: string) => {
       let parsed = parseInput(data);
       parsed.path = filePath;
-      let rules = config.activeRules;
-      // TODO: explicitly define rule type
-      rules.forEach((rule: any) => {
+      let rules: PostParseRule[] = config.activeRules;
+      rules.forEach((rule) => {
         parsed = rule(parsed);
       });
       return [parsed]

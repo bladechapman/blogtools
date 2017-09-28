@@ -1,5 +1,6 @@
+import { BlogItem, PostParseRule } from '../utils';
 
-function* yieldImages(html) {
+function* yieldImages(html: string) {
   let re = /\n<p>(?:<img.*>){2}<\/p>\n/g;
   let match = re.exec(html);
   while (match !== null) {
@@ -8,20 +9,21 @@ function* yieldImages(html) {
   }
 }
 
-function countImages(html) {
-  return html.match(/<(img)[^>]*>/g).length;
+function countImages(html: string) {
+  let match = html.match(/<(img)[^>]*>/g);
+  return (match === null) ? 0 : match.length;
 }
 
-function resizeString(html) {
+function resizeString(html: string) {
   let numImages = countImages(html);
   let newWidth = `${Math.floor(100 / numImages)}%`;
   return html.replace(/<img/g, `<img style="max-width:${newWidth};display:inline-block"`)
     .replace(/<p/g, `<p style="display:flex;align-items:flex-end;" `);
 }
 
-function imageResizeRule(item) {
+const imageResizeRule: PostParseRule = function(item: BlogItem) {
   let changes = [];
-  for (imageMatch of yieldImages(item.html)) {
+  for (let imageMatch of yieldImages(item.html)) {
     let resizedString = resizeString(imageMatch[0]);
     changes.push({
       newStr: resizedString,
@@ -30,7 +32,7 @@ function imageResizeRule(item) {
     });
   }
 
-  for (change of changes.reverse()) {
+  for (let change of changes.reverse()) {
     item.html = item.html.slice(0, change.index) +
       change.newStr + item.html.slice(change.index +
       change.originalStr.length);
@@ -39,4 +41,4 @@ function imageResizeRule(item) {
   return item;
 }
 
-module.exports = imageResizeRule;
+export default imageResizeRule;

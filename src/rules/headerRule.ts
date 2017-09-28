@@ -1,6 +1,6 @@
-'use strict'
+import { PostParseRule } from '../utils';
 
-function titleRule(item) {
+const titleRule: PostParseRule = (item) => {
   if (!("title" in item.yaml)) { return item; }
   let title = item.yaml["title"];
   return {
@@ -10,7 +10,7 @@ function titleRule(item) {
   };
 }
 
-function subtitleRule(item) {
+const subtitleRule: PostParseRule = (item) => {
   if (!("subtitle" in item.yaml)) { return item; }
   let subtitle = item.yaml["subtitle"];
   return {
@@ -20,7 +20,7 @@ function subtitleRule(item) {
   };
 }
 
-function dateRule(item) {
+const dateRule: PostParseRule = (item) => {
   let d = new Date();
   let date = `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
   if ("date" in item.yaml) {
@@ -33,7 +33,7 @@ function dateRule(item) {
   };
 }
 
-function prependDivider(item) {
+const prependDivider: PostParseRule = (item) => {
   return {
     yaml: item.yaml,
     path: item.path,
@@ -41,8 +41,8 @@ function prependDivider(item) {
   };
 }
 
-function headerRule(item) {
+const headerRule: PostParseRule = (item) => {
   return titleRule(subtitleRule(dateRule(prependDivider(item))));
 }
+export default headerRule;
 
-module.exports = headerRule;

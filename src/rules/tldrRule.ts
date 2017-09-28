@@ -1,6 +1,6 @@
-'use strict'
+import { PostParseRule } from '../utils';
 
-function tldrRule(item) {
+const tldrRule: PostParseRule = (item) => {
   let re = /<p>\[TLDR\](.*)<\/p>/g;
   let changes = [];
 
@@ -10,4 +10,4 @@ function tldrRule(item) {
   return item
 }
 
-module.exports = tldrRule;
+export default tldrRule;

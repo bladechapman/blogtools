@@ -1,9 +1,9 @@
-'use strict'
+import { PostParseRule } from '../utils';
 
-function cssRule(item) {
+const cssRule: PostParseRule = (item) => {
   if (!("stylesheets" in item.yaml)) { return item; }
   let stylesheets = item.yaml["stylesheets"];
-  let cssLinks = stylesheets.map((source) => {
+  let cssLinks = stylesheets.map((source: string) => {
     return `<link rel="stylesheet" type="text/css" href=${source}>\n`;
   });
 
@@ -14,4 +14,4 @@ function cssRule(item) {
   };
 }
 
-module.exports = cssRule;
+export default cssRule;
