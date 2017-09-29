@@ -36,6 +36,10 @@ argParser.addArgument(
 let args = argParser.parseArgs();
 
 function interpretArguments(args: any) {
+  if (!args.path) {
+    throw new Error("You must provide a path to parse using the --path argument"); 
+  }
+
   if (fs.lstatSync(args.path).isDirectory() === true) {
     if (args.r === false) {
       throw new Error(args.path + " is a directory (not parsed)");

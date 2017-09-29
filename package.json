@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Command line tools for managing Blade's blog",
   "main": "built/index.js",
+  "bin": "built/index.js",
   "scripts": {},
   "repository": {
     "type": "git",
