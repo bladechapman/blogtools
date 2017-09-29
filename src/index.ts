@@ -37,12 +37,12 @@ let args = argParser.parseArgs();
 
 function interpretArguments(args: any) {
   if (!args.path) {
-    throw new Error("You must provide a path to parse using the --path argument"); 
+    return Promise.reject("You must provide a path to parse using the --path argument");
   }
 
   if (fs.lstatSync(args.path).isDirectory() === true) {
     if (args.r === false) {
-      throw new Error(args.path + " is a directory (not parsed)");
+      return Promise.reject(args.path + " is a directory (not parsed)");
     }
     else {
       if (args.index === true) {
@@ -55,7 +55,7 @@ function interpretArguments(args: any) {
   }
   else {
     if (args.index === true) {
-      throw new Error("An index can only be generated from a directory");
+      return Promise.reject("An index can only be generated from a directory");
     }
     else {
       return utils.processFile(args.path);
@@ -78,4 +78,6 @@ interpretArguments(args)
     });
     return Promise.all(promises);
   })
-  .catch((err) => { console.log(err); });
+  .catch((err) => {
+    console.log(err);
+  });
