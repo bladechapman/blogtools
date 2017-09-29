@@ -24,7 +24,7 @@ argParser.addArgument(
   {
     action: 'storeTrue',
     defaultValue: false,
-    help: 'Use this flag to generate an index.html'
+    help: 'Use this flag to generate an index.blog.html'
   }
 );
 argParser.addArgument(
