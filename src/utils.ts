@@ -192,7 +192,7 @@ export const processDirectory = function(currentPath: string): Promise<BlogItem[
 export const processIndex = function(currentPath: string): Promise<BlogItem[]> {
   return processDirectory(currentPath).then((items) => {
     let indexHtml = genIndex(items, config.indexIgnorePatterns);
-    let indexPath = path.join(path.resolve(currentPath), "index.blog");
+    let indexPath = path.join(path.resolve(currentPath), "index");
     return [{
       path: indexPath,
       html: indexHtml,
