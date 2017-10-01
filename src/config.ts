@@ -28,5 +28,5 @@ export const activeRules = [
  * @type {RegExp[]}
  */
 export const indexIgnorePatterns = [
-  /^_tests.*/
+  /^_.*/,
 ]

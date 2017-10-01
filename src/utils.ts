@@ -167,7 +167,7 @@ export const processDirectory = function(currentPath: string): Promise<BlogItem[
         if (infoItem.isDirectory === true) {
           return processDirectory(infoItem.path);
         }
-        else if (infoItem.path.match(/.*\.blog$/) !== null) {
+        else if (infoItem.path.match(/.*\.blg$/) !== null) {
           return processFile(infoItem.path);
         }
         else {
@@ -236,6 +236,7 @@ export const genIndex = function(items: BlogItem[], ignorePatterns: RegExp[]): s
     let link = item.path + ".html";
 
     let shouldIgnore = ignorePatterns.map((pattern) => link.match(pattern) !== null).reduce((a, b) => a || b, false);
+
     if (shouldIgnore === true) {
       return '';
     }
