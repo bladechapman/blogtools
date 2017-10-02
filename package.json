@@ -1,13 +1,13 @@
 {
   "name": "blogtools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Command line tools for managing Blade's blog",
   "main": "built/index.js",
   "bin": "built/cli.js",
   "types": "built/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "postinstall": "npm run build"
+    "preinstall": "npm run build"
   },
   "repository": {
     "type": "git",
