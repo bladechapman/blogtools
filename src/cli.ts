@@ -42,19 +42,28 @@ argParser.addArgument(
 )
 let args = argParser.parseArgs();
 
-let config: any;
-try {
-  config = require(path.resolve(args.config));
-}
-catch (e) {
-  console.log("Something went wrong with your config!");
-  console.log(e);
-  process.exit(0);
-}
-
 function interpretArguments(args: any) {
   if (!args.path) {
     return Promise.reject("You must provide a path to parse using the --path argument");
+  }
+
+  let configPath = path.resolve(args.config);
+  let config: any;
+  let configCheck = (potentialConfig: any): potentialConfig is utils.Config => {
+    let activeRules = potentialConfig.activeRules;
+    let indexIgnorePatterns = potentialConfig.indexIgnorePatterns;
+
+    return !!activeRules && !!indexIgnorePatterns &&
+      activeRules.map((activeRule: any) => activeRule instanceof Function).reduce((a: boolean, b: boolean) => a && b, true) &&
+      indexIgnorePatterns.map((pattern: any) => pattern instanceof RegExp).reduce((a: boolean, b: boolean) => a && b, true)
+  }
+
+  try {
+    config = require(configPath);
+    if (!configCheck(config)) { throw new Error("The imported config does not fit the Config interface."); }
+  }
+  catch (e) {
+    return Promise.reject(`The configuration file at ${configPath} is incorrectly configured\n\n${e}`);
   }
 
   if (fs.lstatSync(args.path).isDirectory() === true) {
