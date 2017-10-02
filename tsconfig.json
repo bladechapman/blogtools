@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
         "outDir": "./built",
-        "allowJs": true,
+        "allowJs": false,
         "target": "es6",
         "module": "commonjs",
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "declaration": true
     },
     "include": [
         "./src/**/*"

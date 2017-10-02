@@ -1,8 +1,5 @@
-'use strict'
-
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as config from './config';
 import yaml = require('js-yaml');
 import highlight = require('highlight.js');
 import marked = require('marked');
@@ -21,22 +18,18 @@ marked.setOptions({
   }
 });
 
-/**
- * BlogItem
- */
 export interface BlogItem {
   yaml: any;
   html: string;
-  path: string;
+  path: string
 }
 
-/**
- * PostParseRule
- *
- * @param {BlogItem} item A blog item to parse
- * @returns {BlogItem} The parsed blog item
- */
 export type PostParseRule = (item: BlogItem) => BlogItem;
+
+export interface Config {
+  activeRules: PostParseRule[];
+  indexIgnorePatterns: RegExp[]
+}
 
 /**
  * Takes any input and returns a flattened version of it.
@@ -129,7 +122,7 @@ const _proceedWithWrite = function(pathTraversed: string, content: string, pathC
  * @param {string} filePath The path of the file to process
  * @returns {Promise<void | BlogItem[]>}
  */
-export const processFile = function(filePath: string): Promise<BlogItem[]> {
+export const processFile = function(filePath: string, config: Config): Promise<BlogItem[]> {
   return fs.readFile(filePath, 'utf8')
     .then((data: string) => {
       let parsed = parseInput(data);
@@ -148,7 +141,7 @@ export const processFile = function(filePath: string): Promise<BlogItem[]> {
  * @param {string} currentPath The path of the directory to process
  * @returns {Promise<void | BlogItem[]>}
  */
-export const processDirectory = function(currentPath: string): Promise<BlogItem[]> {
+export const processDirectory = function(currentPath: string, config: Config): Promise<BlogItem[]> {
   return fs.readdir(currentPath)
     .then((files) => {
       let fullPaths = files.map((fileName) => { return path.join(currentPath, fileName); });
@@ -165,10 +158,10 @@ export const processDirectory = function(currentPath: string): Promise<BlogItem[
     .then((directoryInfo: { path: string, isDirectory: boolean }[]) => {
       let promises = directoryInfo.map((infoItem) => {
         if (infoItem.isDirectory === true) {
-          return processDirectory(infoItem.path);
+          return processDirectory(infoItem.path, config);
         }
         else if (infoItem.path.match(/.*\.blg$/) !== null) {
-          return processFile(infoItem.path);
+          return processFile(infoItem.path, config);
         }
         else {
           return null;
@@ -189,8 +182,8 @@ export const processDirectory = function(currentPath: string): Promise<BlogItem[
  * @param {string} currentPath The path of the directory from which the directory will be generated
  * @returns {Promise<void | BlogItem[]>}
  */
-export const processIndex = function(currentPath: string): Promise<BlogItem[]> {
-  return processDirectory(currentPath).then((items) => {
+export const processIndex = function(currentPath: string, config: Config): Promise<BlogItem[]> {
+  return processDirectory(currentPath, config).then((items) => {
     let indexHtml = genIndex(items, config.indexIgnorePatterns);
     let indexPath = path.join(path.resolve(currentPath), "index");
     return [{
