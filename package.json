@@ -5,7 +5,10 @@
   "main": "built/index.js",
   "bin": "built/cli.js",
   "types": "built/index.d.ts",
-  "scripts": {},
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bladechapman/blogtools.git"
