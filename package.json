@@ -24,7 +24,7 @@
     "fs-extra": "^3.0.1",
     "highlight.js": "^9.12.0",
     "js-yaml": "^3.8.4",
-    "marked": "^0.3.6"
+    "marked": "^0.4.0"
   },
   "devDependencies": {
     "@types/argparse": "^1.0.33",
