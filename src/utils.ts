@@ -217,8 +217,11 @@ function generateHtml(listItemHtml: string[]): string {
  */
 export const genIndex = function(items: BlogItem[], ignorePatterns: RegExp[]): string {
   let sorted = items.concat().sort((a: BlogItem, b: BlogItem): number => {
-    if (new Date(a) < new Date(b)) return -1;
-    else if (new Date(a) > new Date(b)) return 1;
+    const aDate = a.yaml.date;
+    const bDate = b.yaml.date;
+
+    if (new Date(aDate) < new Date(bDate)) return 1;
+    else if (new Date(aDate) > new Date(bDate)) return -1;
     else return 0;
   });
 
