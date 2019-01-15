@@ -230,8 +230,11 @@ export const genIndex = function(items: BlogItem[], ignorePatterns: RegExp[]): s
     let title = item.yaml.title;
     let subtitle = item.yaml.subtitle;
     let link = item.path + ".html";
+    let fileName = link.split('/').pop() + "";  // coerce to string
 
-    let shouldIgnore = ignorePatterns.map((pattern) => link.match(pattern) !== null).reduce((a, b) => a || b, false);
+    let shouldIgnore = ignorePatterns
+        .map((pattern) => pattern.test(fileName) === true)
+        .reduce((a, b) => a || b, false);
 
     if (shouldIgnore === true) {
       return '';
