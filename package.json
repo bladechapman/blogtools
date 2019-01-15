@@ -1,6 +1,6 @@
 {
   "name": "blogtools",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Command line tools for managing Blade's blog",
   "main": "built/index.js",
   "bin": "built/cli.js",
