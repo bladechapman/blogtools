@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as utils from './utils';
 
 let argParser = new ArgumentParser({
-  version: '1.0.6',
+  version: '1.0.7',
   addHelp: true,
   description: 'Tools for maintaining Blade\'s blog'
 });
